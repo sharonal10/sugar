@@ -122,7 +122,7 @@ def extract_mesh_from_coarse_sugar(args):
     # Set the GPU
     torch.cuda.set_device(args.gpu)
     
-    assert use_eval_split
+    assert use_train_test_split
     # Load the initial 3DGS model
     CONSOLE.print(f"Loading the initial 3DGS model from path {gs_checkpoint_path}...")
     nerfmodel = GaussianSplattingWrapper(
