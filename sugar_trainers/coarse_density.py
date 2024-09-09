@@ -27,7 +27,7 @@ def coarse_training_with_density_regularization(args):
 
     # -----Model parameters-----
     use_eval_split = True
-    n_skip_images_for_eval_split = 8
+    # n_skip_images_for_eval_split = 8
 
     freeze_gaussians = False
     initialize_from_trained_3dgs = True  # True or False
@@ -282,6 +282,8 @@ def coarse_training_with_density_regularization(args):
     
     # ====================Load NeRF model and training data====================
 
+    assert use_eval_split
+
     # Load Gaussian Splatting checkpoint 
     CONSOLE.print(f"\nLoading config {gs_checkpoint_path}...")
     if use_eval_split:
@@ -292,11 +294,13 @@ def coarse_training_with_density_regularization(args):
         iteration_to_load=iteration_to_load,
         load_gt_images=True,
         eval_split=use_eval_split,
-        eval_split_interval=n_skip_images_for_eval_split,
+        # eval_split_interval=n_skip_images_for_eval_split,
         white_background=use_white_background,
+        num_cams=args.num_cams,
         )
 
     CONSOLE.print(f'{len(nerfmodel.training_cameras)} training images detected.')
+    assert len(nerfmodel.training_cameras) == args.num_cams
     CONSOLE.print(f'The model has been trained for {iteration_to_load} steps.')
 
     if downscale_resolution_factor != 1:

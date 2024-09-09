@@ -73,10 +73,11 @@ class GaussianSplattingWrapper:
                  opt_params: OptimizationParams=None,
                  load_gt_images=True,
                  eval_split=False,
-                 eval_split_interval=8,
+                #  eval_split_interval=8,
                  background=[0., 0., 0.],
                  white_background=False,
                  remove_camera_indices=[],
+                 num_cams=None,
                  ) -> None:
         """Initialize the Gaussian Splatting model wrapper.
         
@@ -130,11 +131,13 @@ class GaussianSplattingWrapper:
             remove_indices=remove_camera_indices,
             )
         
+        eval_split_interval = len(cam_list)/num_cams
+        
         if eval_split:
             self.cam_list = []
             self.test_cam_list = []
             for i, cam in enumerate(cam_list):
-                if i % eval_split_interval == 0:
+                if i % eval_split_interval != 0: # assumes even division
                     self.test_cam_list.append(cam)
                 else:
                     self.cam_list.append(cam)
@@ -146,6 +149,8 @@ class GaussianSplattingWrapper:
             self.cam_list = cam_list
             self.test_cam_list = None
             self.test_cameras = None
+        
+        assert len(self.cam_list) == num_cams, self.cam_list
             
         # ns_cameras = convert_camera_from_gs_to_nerfstudio(self.cam_list)
         # self.training_cameras = NeRFCameras.from_ns_cameras(ns_cameras)

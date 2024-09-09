@@ -43,7 +43,7 @@ def extract_mesh_and_texture_from_refined_sugar(args):
     mesh_save_path = refined_model_path.split('/')[-2]
     if args.postprocess_mesh:
         mesh_save_path = mesh_save_path + '_postprocessed'
-    mesh_save_path = mesh_save_path + '.obj'
+    mesh_save_path = mesh_save_path + f'{args.curr_iter if args else ""}' + '.obj'
     mesh_save_path = os.path.join(mesh_output_dir, mesh_save_path)
     
     scene_name = source_path.split('/')[-2] if len(source_path.split('/')[-1]) == 0 else source_path.split('/')[-1]

@@ -122,6 +122,7 @@ def extract_mesh_from_coarse_sugar(args):
     # Set the GPU
     torch.cuda.set_device(args.gpu)
     
+    assert use_eval_split
     # Load the initial 3DGS model
     CONSOLE.print(f"Loading the initial 3DGS model from path {gs_checkpoint_path}...")
     nerfmodel = GaussianSplattingWrapper(
@@ -130,10 +131,12 @@ def extract_mesh_from_coarse_sugar(args):
         iteration_to_load=iteration_to_load,
         load_gt_images=False,
         eval_split=use_train_test_split,
-        eval_split_interval=n_skip_images_for_eval_split,
+        # eval_split_interval=n_skip_images_for_eval_split,
+        num_cams=args.num_cams,
         )
     
     CONSOLE.print(f'{len(nerfmodel.training_cameras)} training images detected.')
+    assert len(nerfmodel.training_cameras) == args.num_cams
     CONSOLE.print(f'The model has been trained for {iteration_to_load} steps.')
     
     # Load the coarse model

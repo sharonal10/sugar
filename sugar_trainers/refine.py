@@ -9,6 +9,7 @@ from sugar_scene.sugar_model import SuGaR, convert_refined_sugar_into_gaussians
 from sugar_scene.sugar_optimizer import OptimizationParams, SuGaROptimizer
 from sugar_scene.sugar_densifier import SuGaRDensifier
 from sugar_utils.loss_utils import ssim, l1_loss, l2_loss
+from sugar_extractors.refined_mesh import extract_mesh_and_texture_from_refined_sugar
 
 from rich.console import Console
 import time
@@ -842,6 +843,35 @@ def refined_training(args):
                 # if optimize_triangles and iteration >= optimize_triangles_from:
                 #     rm.save_model(os.path.join(rc_checkpoint_path, f'rm_{iteration}.pt'))
                 CONSOLE.print("Model saved.")
+
+            if iteration in [1000, 3500, 7000]:
+                print("saving tmp model and obj ", iteration)
+                model_path = os.path.join(sugar_checkpoint_path, f'tmp.pt')
+                sugar.save_model(path=model_path,
+                                train_losses=train_losses,
+                                epoch=epoch,
+                                iteration=iteration,
+                                optimizer_state_dict=optimizer.state_dict(),
+                                )
+                args.refined_mesh_args['refined_model_path'] = model_path
+                args.refined_mesh_args['curr_iter'] = iteration
+                extract_mesh_and_texture_from_refined_sugar(args.refined_mesh_args)
+
+                CONSOLE.print("\nExporting ply file with refined Gaussians...")
+                tmp_list = model_path.split(os.sep)
+                tmp_list[-4] = 'refined_ply'
+                tmp_list.pop(-1)
+                tmp_list[-1] = tmp_list[-1] + f'{iteration}' + '.ply'
+                refined_ply_save_dir = os.path.join(*tmp_list[:-1])
+                refined_ply_save_path = os.path.join(*tmp_list)
+                
+                os.makedirs(refined_ply_save_dir, exist_ok=True)
+                
+                # Export and save ply
+                refined_gaussians = convert_refined_sugar_into_gaussians(sugar)
+                refined_gaussians.save_ply(refined_ply_save_path)
+                CONSOLE.print("Ply file exported. This file is needed for using the dedicated viewer.")
+                
             
             if iteration >= num_iterations:
                 break
@@ -861,6 +891,7 @@ def refined_training(args):
                 # TODO: resize GT images
         
         epoch += 1
+        
 
     CONSOLE.print(f"Training finished after {num_iterations} iterations with loss={loss.detach().item()}.")
     CONSOLE.print("Saving final model...")

@@ -87,6 +87,9 @@ if __name__ == "__main__":
     parser.add_argument('--gpu', type=int, default=0, help='Index of GPU device to use.')
     parser.add_argument('--white_background', type=str2bool, default=False, help='Use a white background instead of black.')
 
+    
+    parser.add_argument('--num_cams', type=int, default=10, help='number of cameras to use')
+
     # Parse arguments
     args = parser.parse_args()
     if args.low_poly:
@@ -118,6 +121,7 @@ if __name__ == "__main__":
         'iteration_to_load': args.iteration_to_load,
         'output_dir': None,
         'eval': args.eval,
+        'num_cams': args.num_cams,
         'estimation_factor': 0.2,
         'normal_factor': 0.2,
         'gpu': args.gpu,
@@ -145,12 +149,27 @@ if __name__ == "__main__":
         'center_bbox': args.center_bbox,
         'gpu': args.gpu,
         'eval': args.eval,
+        'num_cams': args.num_cams,
         'use_centers_to_extract_mesh': False,
         'use_marching_cubes': False,
         'use_vanilla_3dgs': False,
     })
     coarse_mesh_path = extract_mesh_from_coarse_sugar(coarse_mesh_args)[0]
     
+    refined_mesh_args = AttrDict({
+        'scene_path': args.scene_path,
+        'iteration_to_load': args.iteration_to_load,
+        'checkpoint_path': args.checkpoint_path,
+        'mesh_output_dir': None,
+        'n_gaussians_per_surface_triangle': args.gaussians_per_triangle,
+        'square_size': args.square_size,
+        'eval': args.eval,
+        'num_cams': args.num_cams,
+        'gpu': args.gpu,
+        'postprocess_mesh': args.postprocess_mesh,
+        'postprocess_density_threshold': args.postprocess_density_threshold,
+        'postprocess_iterations': args.postprocess_iterations,
+    })
     
     # ----- Refine SuGaR -----
     refined_args = AttrDict({
@@ -167,8 +186,10 @@ if __name__ == "__main__":
         'bboxmax': args.bboxmax,
         'export_ply': args.export_ply,
         'eval': args.eval,
+        'num_cams': args.num_cams,
         'gpu': args.gpu,
         'white_background': args.white_background,
+        'refined_mesh_args': refined_mesh_args,
     })
     refined_sugar_path = refined_training(refined_args)
     
@@ -184,6 +205,7 @@ if __name__ == "__main__":
             'n_gaussians_per_surface_triangle': args.gaussians_per_triangle,
             'square_size': args.square_size,
             'eval': args.eval,
+            'num_cams': args.num_cams,
             'gpu': args.gpu,
             'postprocess_mesh': args.postprocess_mesh,
             'postprocess_density_threshold': args.postprocess_density_threshold,
