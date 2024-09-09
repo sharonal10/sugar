@@ -844,7 +844,7 @@ def refined_training(args):
                 #     rm.save_model(os.path.join(rc_checkpoint_path, f'rm_{iteration}.pt'))
                 CONSOLE.print("Model saved.")
 
-            if iteration in [1000, 3500, 7000]:
+            if iteration % 3000 == 0: # 15k iters
                 print("saving tmp model and obj ", iteration)
                 model_path = os.path.join(sugar_checkpoint_path, f'tmp.pt')
                 sugar.save_model(path=model_path,
