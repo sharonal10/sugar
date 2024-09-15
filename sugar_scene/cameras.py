@@ -125,6 +125,7 @@ def load_gs_cameras(source_path, gs_output_path, image_resolution=1,
             loaded_mask = PILtoTorch(mask, resolution)
         else:
             gt_image = None
+            loaded_mask = None
             if image_resolution in [1, 2, 4, 8]:
                 downscale_factor = image_resolution
                 # resolution = round(orig_w/(image_resolution)), round(orig_h/(image_resolution))
