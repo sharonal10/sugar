@@ -67,10 +67,10 @@ def extract_mesh_from_coarse_sugar(args):
     
     # Mesh output dir
     if args.mesh_output_dir is None:
-        if len(args.scene_path.split("/")[-1]) > 0:
-            args.mesh_output_dir = os.path.join("./output/coarse_mesh", args.scene_path.split("/")[-1])
+        if len(args.checkpoint_path.split("/")[-1]) > 0:
+            args.mesh_output_dir = os.path.join("./output/coarse_mesh", args.checkpoint_path.split("/")[-1])
         else:
-            args.mesh_output_dir = os.path.join("./output/coarse_mesh", args.scene_path.split("/")[-2])
+            args.mesh_output_dir = os.path.join("./output/coarse_mesh", args.checkpoint_path.split("/")[-2])
     mesh_output_dir = args.mesh_output_dir
     os.makedirs(mesh_output_dir, exist_ok=True)
             
