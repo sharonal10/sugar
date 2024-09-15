@@ -218,7 +218,7 @@ class GaussianSplattingWrapper:
             image = render_pkg["render"]
             return image.permute(1, 2, 0)
     
-    def get_gt_image(self, camera_indices:int, to_cuda=False):
+    def get_gt_image(self, camera_indices:int, to_cuda=False, use_mask=False):
         """Returns the ground truth image corresponding to the training camera at the given index.
 
         Args:
@@ -229,6 +229,9 @@ class GaussianSplattingWrapper:
             Tensor: The ground truth image.
         """
         gt_image = self.cam_list[camera_indices].original_image
+        if use_mask == True:
+            mask = self.cam_list[camera_indices].mask
+            gt_image = gt_image * mask
         if to_cuda:
             gt_image = gt_image.cuda()
         return gt_image.permute(1, 2, 0)
