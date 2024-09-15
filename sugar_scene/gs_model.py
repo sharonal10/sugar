@@ -230,7 +230,7 @@ class GaussianSplattingWrapper:
         """
         gt_image = self.cam_list[camera_indices].original_image
         if use_mask == True:
-            mask = self.cam_list[camera_indices].mask
+            mask = self.cam_list[camera_indices].mask.to(gt_image.device)
             gt_image = gt_image * mask
         if to_cuda:
             gt_image = gt_image.cuda()
