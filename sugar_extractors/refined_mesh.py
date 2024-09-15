@@ -46,7 +46,7 @@ def extract_mesh_and_texture_from_refined_sugar(args):
     mesh_save_path = mesh_save_path + f'{args.curr_iter if args else ""}' + '.obj'
     mesh_save_path = os.path.join(mesh_output_dir, mesh_save_path)
     
-    scene_name = source_path.split('/')[-2] if len(source_path.split('/')[-1]) == 0 else source_path.split('/')[-1]
+    scene_name = args.checkpoint_path.split('/')[-2] if len(args.checkpoint_path.split('/')[-1]) == 0 else args.checkpoint_path.split('/')[-1]
     sugar_mesh_path = os.path.join('./output/coarse_mesh/', scene_name, 
                                 refined_model_path.split('/')[-2].split('_normalconsistency')[0].replace('sugarfine', 'sugarmesh') + '.ply')
     
