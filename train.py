@@ -115,53 +115,53 @@ if __name__ == "__main__":
         print('Will export a ply file with the refined 3D Gaussians at the end of the training.')
     
     # ----- Optimize coarse SuGaR -----
-    # coarse_args = AttrDict({
-    #     'checkpoint_path': args.checkpoint_path,
-    #     'scene_path': args.scene_path,
-    #     'iteration_to_load': args.iteration_to_load,
-    #     'output_dir': None,
-    #     'eval': args.eval,
-    #     'num_cams': args.num_cams,
-    #     'estimation_factor': 0.2,
-    #     'normal_factor': 0.2,
-    #     'gpu': args.gpu,
-    #     'white_background': args.white_background,
-    # })
-    # if args.regularization_type == 'sdf':
-    #     coarse_sugar_path = coarse_training_with_sdf_regularization(coarse_args)
-    # elif args.regularization_type == 'density':
-    #     coarse_sugar_path = coarse_training_with_density_regularization(coarse_args)
-    # else:
-    #     raise ValueError(f'Unknown regularization type: {args.regularization_type}')
-    
-    
-    # # ----- Extract mesh from coarse SuGaR -----
-    # coarse_mesh_args = AttrDict({
-    #     'scene_path': args.scene_path,
-    #     'checkpoint_path': args.checkpoint_path,
-    #     'iteration_to_load': args.iteration_to_load,
-    #     'coarse_model_path': coarse_sugar_path,
-    #     'surface_level': args.surface_level,
-    #     'decimation_target': args.n_vertices_in_mesh,
-    #     'mesh_output_dir': None,
-    #     'bboxmin': args.bboxmin,
-    #     'bboxmax': args.bboxmax,
-    #     'center_bbox': args.center_bbox,
-    #     'gpu': args.gpu,
-    #     'eval': args.eval,
-    #     'num_cams': args.num_cams,
-    #     'use_centers_to_extract_mesh': False,
-    #     'use_marching_cubes': False,
-    #     'use_vanilla_3dgs': False,
-    # })
-    # coarse_mesh_path = extract_mesh_from_coarse_sugar(coarse_mesh_args)[0]
-    import os
-    if len(args.checkpoint_path.split("/")[-1]) > 0:
-        ckpt_path = args.checkpoint_path.split("/")[-1]
+    coarse_args = AttrDict({
+        'checkpoint_path': args.checkpoint_path,
+        'scene_path': args.scene_path,
+        'iteration_to_load': args.iteration_to_load,
+        'output_dir': None,
+        'eval': args.eval,
+        'num_cams': args.num_cams,
+        'estimation_factor': 0.2,
+        'normal_factor': 0.2,
+        'gpu': args.gpu,
+        'white_background': args.white_background,
+    })
+    if args.regularization_type == 'sdf':
+        coarse_sugar_path = coarse_training_with_sdf_regularization(coarse_args)
+    elif args.regularization_type == 'density':
+        coarse_sugar_path = coarse_training_with_density_regularization(coarse_args)
     else:
-        ckpt_path = args.checkpoint_path.split("/")[-2]
-    coarse_sugar_path = os.path.join("./output/coarse/", ckpt_path, "sugarcoarse_3Dgs7000_densityestim02_sdfnorm02/15000.pt")
-    coarse_mesh_path = os.path.join("./output/coarse_mesh/", ckpt_path, "sugarmesh_3Dgs7000_densityestim02_sdfnorm02_level03_decim1000000.ply")
+        raise ValueError(f'Unknown regularization type: {args.regularization_type}')
+    
+    
+    # ----- Extract mesh from coarse SuGaR -----
+    coarse_mesh_args = AttrDict({
+        'scene_path': args.scene_path,
+        'checkpoint_path': args.checkpoint_path,
+        'iteration_to_load': args.iteration_to_load,
+        'coarse_model_path': coarse_sugar_path,
+        'surface_level': args.surface_level,
+        'decimation_target': args.n_vertices_in_mesh,
+        'mesh_output_dir': None,
+        'bboxmin': args.bboxmin,
+        'bboxmax': args.bboxmax,
+        'center_bbox': args.center_bbox,
+        'gpu': args.gpu,
+        'eval': args.eval,
+        'num_cams': args.num_cams,
+        'use_centers_to_extract_mesh': False,
+        'use_marching_cubes': False,
+        'use_vanilla_3dgs': False,
+    })
+    coarse_mesh_path = extract_mesh_from_coarse_sugar(coarse_mesh_args)[0]
+    # import os
+    # if len(args.checkpoint_path.split("/")[-1]) > 0:
+    #     ckpt_path = args.checkpoint_path.split("/")[-1]
+    # else:
+    #     ckpt_path = args.checkpoint_path.split("/")[-2]
+    # coarse_sugar_path = os.path.join("./output/coarse/", ckpt_path, "sugarcoarse_3Dgs7000_densityestim02_sdfnorm02/15000.pt")
+    # coarse_mesh_path = os.path.join("./output/coarse_mesh/", ckpt_path, "sugarmesh_3Dgs7000_densityestim02_sdfnorm02_level03_decim1000000.ply")
     
     refined_mesh_args = AttrDict({
         'scene_path': args.scene_path,
